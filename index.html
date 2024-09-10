@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Size Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Sample Size Calculator</h2>
+        
+        <label for="population">Population Size:</label>
+        <input type="number" id="population" placeholder="Enter population size">
+
+        <label for="margin">Margin of Error (%):</label>
+        <input type="number" id="margin" placeholder="Enter margin of error">
+
+        <label for="confidence">Confidence Level:</label>
+        <select id="confidence">
+            <option value="1.645">90%</option>
+            <option value="1.96" selected>95%</option>
+            <option value="2.576">99%</option>
+        </select>
+
+        <button onclick="calculateSampleSize()">Calculate Sample Size</button>
+        
+        <h3 id="result"></h3>
+    </div>
+
+    <script>
+        function calculateSampleSize() {
+            let population = document.getElementById("population").value;
+            let margin = document.getElementById("margin").value;
+            let confidence = document.getElementById("confidence").value;
+
+            // Check if inputs are valid
+            if (!population || !margin) {
+                alert("Please fill in all fields");
+                return;
+            }
+
+            margin = margin / 100; // Convert percentage to decimal
+
+            // Assumed standard deviation (p*q)
+            const stdDev = 0.5; 
+            
+            // Z-score for the selected confidence level
+            const z = confidence;
+
+            // Sample size formula (before adjusting for finite population)
+            let sampleSize = Math.pow(z, 2) * stdDev * (1 - stdDev) / Math.pow(margin, 2);
+
+            // Adjust for finite population
+            if (population > 0) {
+                sampleSize = sampleSize / (1 + (sampleSize - 1) / population);
+            }
+
+            // Round up the sample size
+            sampleSize = Math.ceil(sampleSize);
+
+            // Display result
+            document.getElementById("result").innerHTML = `Required Sample Size: ${sampleSize}`;
+        }
+    </script>
+
+</body>
+</html>
